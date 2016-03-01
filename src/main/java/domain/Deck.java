@@ -28,7 +28,7 @@ public class Deck {
 		
 		// Put shuffled cards in a Stack object which becomes our deck.
 		cards = new Stack<Card>();
-		for (int i = 0; i <= cardList.size(); i++) {
+		for (int i = 0; i < cardList.size(); i++) {
 			cards.push(cardList.get(i));
 		}
 	}

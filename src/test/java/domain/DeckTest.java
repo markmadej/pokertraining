@@ -14,11 +14,12 @@ public class DeckTest {
 			Card c = d.dealCard();
 			while (c != null) {
 				ct++;
+				c = d.dealCard();
 			}
 		} catch (Exception e) {
 			// This gets thrown when the cards run out - ignore it
 		}
-		assertTrue("Did not create a 52 card deck.", ct == 52);
+		assertTrue("Did not create a 52 card deck - count was " + ct, ct == 52);
 	}
 
 }
