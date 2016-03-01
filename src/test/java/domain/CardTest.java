@@ -11,25 +11,25 @@ public class CardTest extends TestCase {
 		Card c1 = new Card(Card.HEARTS, Card.ACE);
 		String str = c1.toString();
 		String shortStr = c1.shortString();
-		assertTrue(str.equals("Ace of hearts"));
-		assertTrue(shortStr.equals("Ah"));
+		assertTrue("Bad string found", str.equals("Ace of hearts"));
+		assertTrue("Bad short string found", shortStr.equals("Ah"));
 		
 		c1 = new Card(Card.CLUBS, Card.DEUCE);
 		str = c1.toString();
 		shortStr = c1.shortString();
-		assertTrue(str.equals("Deuce of clubs"));
-		assertTrue(shortStr.equals("2c"));
+		assertTrue("Bad string found", str.equals("Deuce of clubs"));
+		assertTrue("Bad short string found", shortStr.equals("2c"));
 		
 		c1 = new Card(Card.SPADES, Card.JACK);
 		str = c1.toString();
 		shortStr = c1.shortString();
-		assertTrue(str.equals("Jack of spades"));
-		assertTrue(shortStr.equals("Js"));
+		assertTrue("Bad string found", str.equals("Jack of spades"));
+		assertTrue("Bad short string found", shortStr.equals("Js"));
 		
 		c1 = new Card(Card.DIAMONDS, Card.FOUR);
 		str = c1.toString();
 		shortStr = c1.shortString();
-		assertTrue(str.equals("Four of diamonds"));
-		assertTrue(shortStr.equals("4d"));
+		assertTrue("Bad string found", str.equals("Four of diamonds"));
+		assertTrue("Bad short string found", shortStr.equals("4d"));
 	}
 }
