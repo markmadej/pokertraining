@@ -168,4 +168,13 @@ public class Card {
 		}
 		return tempStr;
 	}
+
+	public int getSuit() {
+		return suit;
+	}
+
+	public int getDenomination() {
+		return denomination;
+	}
+
 }
