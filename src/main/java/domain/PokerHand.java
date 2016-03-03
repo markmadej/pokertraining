@@ -1,5 +1,6 @@
 package domain;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /*
@@ -36,15 +37,29 @@ public class PokerHand {
 	 */
 	private int cardMatrix[][] = new int[4][13];
 	
-	private Card[] cards = null;
+	private ArrayList<Card> cards = new ArrayList<Card>();
 	
 	public PokerHand() {}
 	
-	public PokerHand(Card[] cards) {
-		this.cards = new Card[cards.length];
-		for (int i = 0; i < cards.length; i++) {
-			this.cards[i] = cards[i];
+	public PokerHand(ArrayList<Card> cards) {
+		for (Card c : cards) {
+			this.cards.add(c);
 		}
+		refreshHand();
+	}
+	
+	public void addCard(Card c) {
+		cards.add(c);
+		refreshHand();
+	}
+	
+	/**
+	 * This function refreshes data and recalculates the hand.
+	 * It should be called any time poker hand data is modified (cards added, etc)
+	 */
+	public void refreshHand() {
+		populateCardMatrix();
+		evaluateHand();	
 	}
 	
 	/**
@@ -55,7 +70,7 @@ public class PokerHand {
 	 * @return	true on success, false on failure.  Less than 5 cards triggers a failure.
 	 */
 	public boolean evaluateHand() {
-		if (cards.length < 4) {
+		if (cards.size() < 4) {
 			// If the hand doesn't have 5 cards, fail.  4 because of zero index 
 			return false;
 		}
@@ -64,6 +79,24 @@ public class PokerHand {
 	}
 	
 	private boolean isStraightFlush() {
+		// Go through each suit, try to find longest string of 5 cards
+		for (int suit = 0; suit < 4; suit++) {
+			//Count the ace on the bottom end too, starting with the wheel
+			int cardsInARow = 0;
+			for (int denom = Card.ACE; denom >= Card.DEUCE; denom--) {
+				if (cardMatrix[suit][denom] == 1) {
+					cardsInARow++;
+				} else {
+					cardsInARow = 0;
+				}
+				if (cardsInARow == 5) {
+					// We found a straight flush!  
+				}
+			}
+			if (cardMatrix[suit][Card.ACE] == 1) {
+				cardsInARow++;
+			}
+		}
 		return false;
 	}
 	
@@ -115,6 +148,7 @@ public class PokerHand {
 	
 	/**
 	 * This function resets all values to zero in the cardMatrix.
+	 * Don't call this directly - populatecardMatrix calls it.
 	 */
 	private void resetCardMatrix() {
 		for (int i = 0; i < 4; i++) {
@@ -123,7 +157,11 @@ public class PokerHand {
 	}
 	
 	private void populateCardMatrix() {
+		//Reset the array to all zeroes
+		resetCardMatrix();
+		
 		for (Card c : cards) {
+			//Add a marker for each card we have
 			cardMatrix[c.getSuit()][c.getDenomination()] = 1;
 		}
 	}
