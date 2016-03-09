@@ -34,7 +34,7 @@ public class PokerHand {
 	 * Initialized at an invalid value to avoid confusion.
 	 */
 	private int handRanking = RANK_NOT_CALCULATED;
-	private Card[] best5Cards = new Card[5];
+	private ArrayList<Card> best5Cards = new ArrayList<Card>();
 	
 	/*
 	 * cardMatrix is a virtual grid that represents the cards in your hand.
@@ -88,6 +88,22 @@ public class PokerHand {
 		
 		if (isStraightFlush()) return true;
 		
+		if (isFourOfAKind()) return true;
+		
+		if (isFullHouse()) return true;
+		
+		if (isFlush()) return true;
+		
+		if (isStraight()) return true;
+		
+		if (isThreeOfAKind()) return true;
+		
+		if (isTwoPair()) return true;
+		
+		if (isOnePair()) return true;
+		
+		if (calculateHighCards()) return true;
+		
 		return false;
 	}
 	
@@ -95,11 +111,13 @@ public class PokerHand {
 		// Go through each suit, try to find longest string of 5 cards
 		
 		for (int suit = 1; suit <= 4; suit++) {
+			best5Cards.clear();
 			//Count the ace on the bottom end too, starting with the wheel
 			int cardsInARow = 0;
 			for (int denom = Card.ACE; denom >= Card.DEUCE; denom--) {
 				if (cardMatrix[suit][denom] == 1) {
 					cardsInARow++;
+					best5Cards.add(new Card(suit, denom));
 					if (cardsInARow == 5) {
 						// We found a straight flush!  
 						handRanking = STRAIGHT_FLUSH;
@@ -107,17 +125,45 @@ public class PokerHand {
 					}
 				} else {
 					cardsInARow = 0;
+					best5Cards.clear();
 				}
 			}
 			if (cardMatrix[suit][Card.ACE] == 1 && cardsInARow == 4) {
+				best5Cards.add(new Card(suit, Card.ACE));
 				handRanking = STRAIGHT_FLUSH;
 				return true;
 			}
 		}
+		best5Cards.clear();
 		return false;
 	}
 	
 	private boolean isFourOfAKind() {
+		//First check to see if there is a 4 of a kind.  Then find the highest kicker after.
+		best5Cards.clear();
+		for (int denom = Card.DEUCE; denom <= Card.ACE; denom++) {
+			if (cardMatrix[1][denom] == 1 && 
+				cardMatrix[2][denom] == 1 &&
+				cardMatrix[3][denom] == 1 &&
+				cardMatrix[4][denom] == 1) {
+				// 4 of a kind!  Add the cards to the best card list.
+				best5Cards.add(new Card(1, denom));
+				best5Cards.add(new Card(2, denom));
+				best5Cards.add(new Card(3, denom));
+				best5Cards.add(new Card(4, denom));
+				
+				// Identify the highest kicker and you're done.
+				for (int kickerDenom = Card.ACE; kickerDenom <= Card.DEUCE; kickerDenom--) {
+					for (int suit = 1; suit <= 4; suit++) {
+						if (cardMatrix[suit][denom] == 1) {
+							best5Cards.add(new Card(suit, kickerDenom));
+							handRanking = FOUR_OF_A_KIND;
+							return true;
+						}
+					}
+				}
+			}
+		}
 		return false;
 	}
 	
@@ -132,19 +178,24 @@ public class PokerHand {
 	/**
 	 * isFlush returns the suit if a flush is found, or -1 for no flush.
 	 */
-	private int isFlush() {
+	private boolean isFlush() {
+		
 		for (int suit = 1; suit < 5; suit++) {
+			best5Cards.clear();
 			int suitCount = 0;
 			for (int denom = Card.DEUCE; denom < Card.ACE; denom++) {
 				if (cardMatrix[suit][denom] == 1) {
 					suitCount++;
+					best5Cards.add(new Card(suit, denom));
 				}
 				if (suitCount >= 5) {
-					return suit;
+					handRanking = FLUSH;
+					return true;
 				}
 			}
 		}
-		return -1;  //Not a flush
+		best5Cards.clear();
+		return false;  //Not a flush
 	}
 	
 	private boolean isThreeOfAKind() {
@@ -159,8 +210,8 @@ public class PokerHand {
 		return false;
 	}
 	
-	private void determineHighCards() {
-
+	private boolean calculateHighCards() {
+		return false;
 	}
 	
 	/**
