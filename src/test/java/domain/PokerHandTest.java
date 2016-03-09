@@ -10,14 +10,14 @@ public class PokerHandTest {
 
 	@Test
 	public void testStraightFlush() {
-		ArrayList<Card> cards = new ArrayList();
+		ArrayList<Card> cards = new ArrayList<Card>();
 		cards.add(new Card(Card.SPADES, Card.JACK));
 		cards.add(new Card(Card.SPADES, Card.EIGHT));
-		cards.add(new Card(Card.SPADES, Card.DEUCE));
+		cards.add(new Card(Card.HEARTS, Card.DEUCE));
 		cards.add(new Card(Card.SPADES, Card.NINE));
 		cards.add(new Card(Card.SPADES, Card.TEN));
 		cards.add(new Card(Card.CLUBS, Card.QUEEN));
-		cards.add(new Card(Card.HEARTS, Card.QUEEN));
+		cards.add(new Card(Card.SPADES, Card.QUEEN));
 		
 		PokerHand ph = new PokerHand(cards);
 		assertTrue("Could not evaluate hand", ph.evaluateHand());
@@ -28,7 +28,7 @@ public class PokerHandTest {
 	
 	@Test
 	public void testStraightFlushWheel() {
-		ArrayList<Card> cards = new ArrayList();
+		ArrayList<Card> cards = new ArrayList<Card>();
 		cards.add(new Card(Card.DIAMONDS, Card.FOUR));
 		cards.add(new Card(Card.DIAMONDS, Card.TREY));
 		cards.add(new Card(Card.DIAMONDS, Card.DEUCE));

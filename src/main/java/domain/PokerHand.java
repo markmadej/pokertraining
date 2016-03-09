@@ -94,22 +94,24 @@ public class PokerHand {
 	private boolean isStraightFlush() {
 		// Go through each suit, try to find longest string of 5 cards
 		
-		for (int suit = 0; suit < 4; suit++) {
+		for (int suit = 1; suit <= 4; suit++) {
 			//Count the ace on the bottom end too, starting with the wheel
 			int cardsInARow = 0;
 			for (int denom = Card.ACE; denom >= Card.DEUCE; denom--) {
 				if (cardMatrix[suit][denom] == 1) {
 					cardsInARow++;
+					if (cardsInARow == 5) {
+						// We found a straight flush!  
+						handRanking = STRAIGHT_FLUSH;
+						return true;
+					}
 				} else {
 					cardsInARow = 0;
-				}
-				if (cardsInARow == 5) {
-					// We found a straight flush!  
-					handRanking = STRAIGHT_FLUSH;
 				}
 			}
 			if (cardMatrix[suit][Card.ACE] == 1 && cardsInARow == 4) {
 				handRanking = STRAIGHT_FLUSH;
+				return true;
 			}
 		}
 		return false;
