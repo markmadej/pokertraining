@@ -98,6 +98,171 @@ public class PokerHandTest {
 				ph.getHandRanking() != PokerHand.FOUR_OF_A_KIND);
 	}
 	
+	@Test
+	public void testFullHouseWith3CardsHigherThanTwo() {
+		ArrayList<Card> cards = new ArrayList<Card>();
+		cards.add(new Card(Card.DIAMONDS, Card.FOUR));
+		cards.add(new Card(Card.SPADES, Card.TREY));
+		cards.add(new Card(Card.HEARTS, Card.DEUCE));
+		cards.add(new Card(Card.HEARTS, Card.FOUR));
+		cards.add(new Card(Card.CLUBS, Card.FOUR));
+		cards.add(new Card(Card.DIAMONDS, Card.TREY));
+		cards.add(new Card(Card.SPADES, Card.JACK));
+		
+		PokerHand ph = new PokerHand(cards);
+		assertTrue("Could not evaluate hand", ph.evaluateHand());
+		
+		assertTrue("Did not find a boat.",
+				ph.getHandRanking() == PokerHand.FULL_HOUSE);
+	}
+	
+	@Test
+	public void testFullHouseWith2CardsHigherThanThree() {
+		ArrayList<Card> cards = new ArrayList<Card>();
+		cards.add(new Card(Card.DIAMONDS, Card.SEVEN));
+		cards.add(new Card(Card.SPADES, Card.QUEEN));
+		cards.add(new Card(Card.HEARTS, Card.DEUCE));
+		cards.add(new Card(Card.SPADES, Card.SEVEN));
+		cards.add(new Card(Card.CLUBS, Card.SEVEN));
+		cards.add(new Card(Card.DIAMONDS, Card.QUEEN));
+		cards.add(new Card(Card.SPADES, Card.JACK));
+		
+		PokerHand ph = new PokerHand(cards);
+		assertTrue("Could not evaluate hand", ph.evaluateHand());
+		
+		assertTrue("Did not find a boat.",
+				ph.getHandRanking() == PokerHand.FULL_HOUSE);
+	}
+	
+	@Test
+	public void testCardMatrix() {
+		// Make sure the matrix is being populated properly.
+		
+		// Probably need to use the introspection API to make the card matrix data
+		// publicly available for this test.  Need to research.
+		ArrayList<Card> cards = new ArrayList<Card>();
+		cards.add(new Card(Card.HEARTS, Card.JACK));
+		cards.add(new Card(Card.SPADES, Card.TREY));
+		cards.add(new Card(Card.HEARTS, Card.DEUCE));
+		cards.add(new Card(Card.HEARTS, Card.FOUR));
+		cards.add(new Card(Card.CLUBS, Card.FOUR));
+		cards.add(new Card(Card.HEARTS, Card.FIVE));
+		cards.add(new Card(Card.HEARTS, Card.ACE));
+		
+		PokerHand ph = new PokerHand(cards);
+		assertTrue("Could not evaluate hand", ph.evaluateHand());
+		
+		assertTrue("Placeholder - this will fail until the rest of the test is written.",
+				false);
+	}
+	
+	@Test
+	public void testFlush() {
+		ArrayList<Card> cards = new ArrayList<Card>();
+		cards.add(new Card(Card.HEARTS, Card.JACK));
+		cards.add(new Card(Card.SPADES, Card.TREY));
+		cards.add(new Card(Card.HEARTS, Card.DEUCE));
+		cards.add(new Card(Card.HEARTS, Card.FOUR));
+		cards.add(new Card(Card.CLUBS, Card.FOUR));
+		cards.add(new Card(Card.HEARTS, Card.FIVE));
+		cards.add(new Card(Card.HEARTS, Card.ACE));
+		
+		PokerHand ph = new PokerHand(cards);
+		assertTrue("Could not evaluate hand", ph.evaluateHand());
+		
+		assertTrue("Did not find a flush.",
+				ph.getHandRanking() == PokerHand.FLUSH);
+	}
+	
+	@Test
+	public void testWheel() {
+		ArrayList<Card> cards = new ArrayList<Card>();
+		cards.add(new Card(Card.DIAMONDS, Card.FOUR));
+		cards.add(new Card(Card.SPADES, Card.TREY));
+		cards.add(new Card(Card.HEARTS, Card.DEUCE));
+		cards.add(new Card(Card.DIAMONDS, Card.ACE));
+		cards.add(new Card(Card.CLUBS, Card.FIVE));
+		cards.add(new Card(Card.HEARTS, Card.QUEEN));
+		cards.add(new Card(Card.HEARTS, Card.ACE));
+		
+		PokerHand ph = new PokerHand(cards);
+		assertTrue("Could not evaluate hand", ph.evaluateHand());
+		
+		assertTrue("Did not find a straight (wheel).",
+				ph.getHandRanking() == PokerHand.STRAIGHT);
+	}
+	
+	@Test
+	public void testStraight() {
+		ArrayList<Card> cards = new ArrayList<Card>();
+		cards.add(new Card(Card.DIAMONDS, Card.NINE));
+		cards.add(new Card(Card.SPADES, Card.EIGHT));
+		cards.add(new Card(Card.HEARTS, Card.DEUCE));
+		cards.add(new Card(Card.DIAMONDS, Card.ACE));
+		cards.add(new Card(Card.CLUBS, Card.FIVE));
+		cards.add(new Card(Card.HEARTS, Card.SEVEN));
+		cards.add(new Card(Card.HEARTS, Card.SIX));
+		
+		PokerHand ph = new PokerHand(cards);
+		assertTrue("Could not evaluate hand", ph.evaluateHand());
+		
+		assertTrue("Did not find a straight.",
+				ph.getHandRanking() == PokerHand.STRAIGHT);
+	}
+	
+	@Test
+	public void testTwoPair() {
+		ArrayList<Card> cards = new ArrayList<Card>();
+		cards.add(new Card(Card.DIAMONDS, Card.NINE));
+		cards.add(new Card(Card.SPADES, Card.EIGHT));
+		cards.add(new Card(Card.HEARTS, Card.EIGHT));
+		cards.add(new Card(Card.DIAMONDS, Card.FIVE));
+		cards.add(new Card(Card.CLUBS, Card.FIVE));
+		cards.add(new Card(Card.HEARTS, Card.SEVEN));
+		cards.add(new Card(Card.HEARTS, Card.JACK));
+		
+		PokerHand ph = new PokerHand(cards);
+		assertTrue("Could not evaluate hand", ph.evaluateHand());
+		
+		assertTrue("Did not find two pair.",
+				ph.getHandRanking() == PokerHand.TWO_PAIR);
+	}
+	
+	@Test
+	public void testOnePair() {
+		ArrayList<Card> cards = new ArrayList<Card>();
+		cards.add(new Card(Card.DIAMONDS, Card.NINE));
+		cards.add(new Card(Card.CLUBS, Card.EIGHT));
+		cards.add(new Card(Card.HEARTS, Card.EIGHT));
+		cards.add(new Card(Card.DIAMONDS, Card.FIVE));
+		cards.add(new Card(Card.CLUBS, Card.QUEEN));
+		cards.add(new Card(Card.HEARTS, Card.SEVEN));
+		cards.add(new Card(Card.CLUBS, Card.JACK));
+		
+		PokerHand ph = new PokerHand(cards);
+		assertTrue("Could not evaluate hand", ph.evaluateHand());
+		
+		assertTrue("Did not find one pair.",
+				ph.getHandRanking() == PokerHand.ONE_PAIR);
+	}
+	
+	@Test
+	public void testHighCard() {
+		ArrayList<Card> cards = new ArrayList<Card>();
+		cards.add(new Card(Card.DIAMONDS, Card.NINE));
+		cards.add(new Card(Card.CLUBS, Card.DEUCE));
+		cards.add(new Card(Card.HEARTS, Card.EIGHT));
+		cards.add(new Card(Card.DIAMONDS, Card.FIVE));
+		cards.add(new Card(Card.CLUBS, Card.TREY));
+		cards.add(new Card(Card.HEARTS, Card.SEVEN));
+		cards.add(new Card(Card.CLUBS, Card.JACK));
+		
+		PokerHand ph = new PokerHand(cards);
+		assertTrue("Could not evaluate hand", ph.evaluateHand());
+		
+		assertTrue("Did not find a high card.",
+				ph.getHandRanking() == PokerHand.HIGH_CARD);
+	}
 	
 
 }

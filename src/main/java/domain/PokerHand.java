@@ -153,7 +153,7 @@ public class PokerHand {
 				best5Cards.add(new Card(4, denom));
 				
 				// Identify the highest kicker and you're done.
-				for (int kickerDenom = Card.ACE; kickerDenom <= Card.DEUCE; kickerDenom--) {
+				for (int kickerDenom = Card.ACE; kickerDenom >= Card.DEUCE; kickerDenom--) {
 					for (int suit = 1; suit <= 4; suit++) {
 						if (cardMatrix[suit][denom] == 1) {
 							best5Cards.add(new Card(suit, kickerDenom));
