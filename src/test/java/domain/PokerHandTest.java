@@ -150,10 +150,20 @@ public class PokerHandTest {
 		cards.add(new Card(Card.HEARTS, Card.ACE));
 		
 		PokerHand ph = new PokerHand(cards);
-		assertTrue("Could not evaluate hand", ph.evaluateHand());
 		
-		assertTrue("Placeholder - this will fail until the rest of the test is written.",
-				false);
+		assertTrue(ph.getCardMatrixValue(Card.HEARTS, Card.JACK) == 1);
+		assertTrue(ph.getCardMatrixValue(Card.SPADES, Card.TREY) == 1);
+		assertTrue(ph.getCardMatrixValue(Card.HEARTS, Card.DEUCE) == 1);
+		assertTrue(ph.getCardMatrixValue(Card.HEARTS, Card.FOUR) == 1);
+		assertTrue(ph.getCardMatrixValue(Card.CLUBS, Card.FOUR) == 1);
+		assertTrue(ph.getCardMatrixValue(Card.HEARTS, Card.FIVE) == 1);
+		assertTrue(ph.getCardMatrixValue(Card.HEARTS, Card.ACE) == 1);
+		
+		assertTrue(ph.getCardMatrixValue(Card.HEARTS, Card.EIGHT) == 0);
+		assertTrue(ph.getCardMatrixValue(Card.CLUBS, Card.SEVEN) == 0);
+		assertTrue(ph.getCardMatrixValue(Card.HEARTS, Card.SIX) == 0);
+		assertTrue(ph.getCardMatrixValue(Card.SPADES, Card.ACE) == 0);
+		
 	}
 	
 	@Test

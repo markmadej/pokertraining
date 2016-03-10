@@ -183,15 +183,16 @@ public class PokerHand {
 		for (int suit = 1; suit < 5; suit++) {
 			best5Cards.clear();
 			int suitCount = 0;
-			for (int denom = Card.DEUCE; denom < Card.ACE; denom++) {
+			for (int denom = Card.DEUCE; denom <= Card.ACE; denom++) {
 				if (cardMatrix[suit][denom] == 1) {
 					suitCount++;
 					best5Cards.add(new Card(suit, denom));
+					if (suitCount >= 5) {
+						handRanking = FLUSH;
+						return true;
+					}
 				}
-				if (suitCount >= 5) {
-					handRanking = FLUSH;
-					return true;
-				}
+
 			}
 		}
 		best5Cards.clear();
@@ -245,5 +246,9 @@ public class PokerHand {
 			throw new RuntimeException("Can't get hand rank - it's not calculated yet");
 		}
 		return handRanking;
+	}
+
+	public int getCardMatrixValue(int suit, int denom) {
+		return cardMatrix[suit][denom];
 	}
 }
