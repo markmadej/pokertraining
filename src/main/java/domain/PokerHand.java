@@ -172,6 +172,46 @@ public class PokerHand {
 	}
 	
 	private boolean isStraight() {
+		// Go through each denomination, try to find longest string of 5 cards
+		
+		int cardsInARow = 0;
+		best5Cards.clear();
+		for (int denom = Card.ACE; denom >= Card.DEUCE; denom--) {
+			
+			//If there is at least one suit with this denomination, add to the chain.
+			
+			boolean foundOne = false;
+			
+			for (int suit = 1; suit <= 4; suit++) {
+				if (cardMatrix[suit][denom] == 1) {
+					best5Cards.add(new Card(suit, denom));
+					cardsInARow++;
+					foundOne = true;
+					if (cardsInARow == 5) {
+						handRanking = STRAIGHT;
+						return true;
+					}
+					break;
+				}
+			}
+			
+			if (!foundOne) {
+				//Reset the counter.
+				cardsInARow = 0;
+				best5Cards.clear();
+			}
+		}
+		if (cardsInARow == 4) {
+			//Check to see if the ace is present - if so we have a wheel
+			for (int suit = 1; suit <= 4; suit++) {
+				if (cardMatrix[suit][Card.ACE] == 1) {
+					best5Cards.add(new Card(suit, Card.ACE));
+					handRanking = STRAIGHT;
+					return true;
+				}
+			}
+		}
+		best5Cards.clear();
 		return false;
 	}
 	
