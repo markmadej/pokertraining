@@ -168,6 +168,48 @@ public class PokerHand {
 	}
 	
 	private boolean isFullHouse() {
+		ArrayList<Card> highestTrips = new ArrayList<Card>();
+		ArrayList<Card> highestPair = new ArrayList<Card>();
+		boolean foundTrips = false;
+		boolean foundPair = false;
+		//Loop through and find the highest three of a kind and highest pair
+		for (int denom = Card.ACE; denom >= Card.DEUCE; denom--) {
+			if (foundTrips && foundPair) {
+				//We have our full house!
+				break;
+			}
+			if (!foundTrips && 
+					(cardMatrix[Card.CLUBS][denom] + 
+					cardMatrix[Card.HEARTS][denom] + 
+					cardMatrix[Card.SPADES][denom] + 
+					cardMatrix[Card.DIAMONDS][denom] == 3)) {
+				for (int suit = 1; suit <= 4; suit++) {
+					if (cardMatrix[suit][denom] == 1) {
+						highestTrips.add(new Card(suit, denom));
+					}
+				}
+				foundTrips = true;
+				continue;
+			}
+			if (!foundPair && 
+					(cardMatrix[Card.CLUBS][denom] + 
+					cardMatrix[Card.HEARTS][denom] + 
+					cardMatrix[Card.SPADES][denom] + 
+					cardMatrix[Card.DIAMONDS][denom] == 2)) {
+				for (int suit = 1; suit <= 4; suit++) {
+					if (cardMatrix[suit][denom] == 1) {
+						highestPair.add(new Card(suit, denom));
+					}
+				}
+				foundPair = true;
+			}
+		}
+		if (foundTrips && foundPair) {
+			best5Cards.addAll(highestTrips);
+			best5Cards.addAll(highestPair);
+			handRanking = FULL_HOUSE;
+			return true;
+		}
 		return false;
 	}
 	
@@ -240,18 +282,153 @@ public class PokerHand {
 	}
 	
 	private boolean isThreeOfAKind() {
+		boolean foundTrips = false;
+		best5Cards.clear();
+		int tripsDenom = 0;
+		//Loop through and find the highest three of a kind
+		for (int denom = Card.ACE; denom >= Card.DEUCE; denom--) {
+
+			if (cardMatrix[Card.CLUBS][denom] + 
+					cardMatrix[Card.HEARTS][denom] + 
+					cardMatrix[Card.SPADES][denom] + 
+					cardMatrix[Card.DIAMONDS][denom] == 3) {
+				tripsDenom = denom;
+				for (int suit = 1; suit <= 4; suit++) {
+					if (cardMatrix[suit][denom] == 1) {
+						best5Cards.add(new Card(suit, denom));
+					}
+				}
+				foundTrips = true;
+				break;
+			}
+		}
+		if (foundTrips) {
+			//Find the kickers.
+			int kickerCt = 0;
+			for (int kickerDenom = Card.ACE; kickerDenom >= Card.DEUCE; kickerDenom--) {
+				if (kickerDenom == tripsDenom) {
+					continue;
+				}
+				for (int suit = 1; suit <= 4; suit++) {
+					if (cardMatrix[suit][kickerDenom] == 1) {
+						kickerCt++;
+						best5Cards.add(new Card(suit, kickerDenom));
+						if (kickerCt == 3) {
+							handRanking = THREE_OF_A_KIND;
+							return true;
+						}
+					}
+				}
+			}
+		}
 		return false;
 	}
 	
 	private boolean isTwoPair() {
+		best5Cards.clear();
+		int pairCt = 0;
+		int pairDenoms[] = new int[2];
+		//Loop through and find the highest pair
+		for (int denom = Card.ACE; denom >= Card.DEUCE; denom--) {
+
+			if (cardMatrix[Card.CLUBS][denom] + 
+					cardMatrix[Card.HEARTS][denom] + 
+					cardMatrix[Card.SPADES][denom] + 
+					cardMatrix[Card.DIAMONDS][denom] == 2) {
+				for (int suit = 1; suit <= 4; suit++) {
+					if (cardMatrix[suit][denom] == 1) {
+						best5Cards.add(new Card(suit, denom));
+					}
+				}
+				pairDenoms[pairCt] = denom;
+				pairCt++;
+				if (pairCt == 2) {
+					//Find the kicker.
+					for (int kickerDenom = Card.ACE; denom >= Card.DEUCE; denom--) {
+						if (kickerDenom == pairDenoms[0] || kickerDenom == pairDenoms[1]) {
+							continue;
+						}
+						for (int suit = 1; suit <= 4; suit++) {
+							if (cardMatrix[suit][denom] == 1) {
+								best5Cards.add(new Card(suit, denom));
+								handRanking = TWO_PAIR;
+								return true;
+							}
+						}
+					}
+					throw new RuntimeException("This should never happen - kicker could not be found.");
+				}
+			}
+		}
 		return false;
 	}
 	
 	private boolean isOnePair() {
+		boolean foundPair = false;
+		best5Cards.clear();
+		int pairDenom = 0;
+		//Loop through and find the highest three of a kind
+		for (int denom = Card.ACE; denom >= Card.DEUCE; denom--) {
+
+			if (cardMatrix[Card.CLUBS][denom] + 
+					cardMatrix[Card.HEARTS][denom] + 
+					cardMatrix[Card.SPADES][denom] + 
+					cardMatrix[Card.DIAMONDS][denom] == 2) {
+				pairDenom = denom;
+				for (int suit = 1; suit <= 4; suit++) {
+					if (cardMatrix[suit][denom] == 1) {
+						best5Cards.add(new Card(suit, denom));
+					}
+				}
+				foundPair = true;
+				break;
+			}
+		}
+		if (foundPair) {
+			//Find the kickers.
+			int kickerCt = 0;
+			for (int denom = Card.ACE; denom >= Card.DEUCE; denom--) {
+				if (denom == pairDenom) {
+					continue;
+				}
+				for (int suit = 1; suit <= 4; suit++) {
+					if (cardMatrix[suit][denom] == 1) {
+						kickerCt++;
+						best5Cards.add(new Card(suit, denom));
+						if (kickerCt == 3) {
+							handRanking = ONE_PAIR;
+							return true;
+						}
+					}
+				}
+			}
+
+		}
 		return false;
 	}
 	
+	/**
+	 * calculateHighCards should ONLY be called when we KNOW that there is no pair or other
+	 * better hand value.  This function only calculates the kickers and assumes at this point
+	 * that we know for sure this is a high card only hand.
+	 * @return
+	 */
 	private boolean calculateHighCards() {
+		//Find the 5 highest cards.
+		int cardCt = 0;
+		for (int denom = Card.ACE; denom >= Card.DEUCE; denom--) {
+
+			for (int suit = 1; suit <= 4; suit++) {
+				if (cardMatrix[suit][denom] == 1) {
+					cardCt++;
+					best5Cards.add(new Card(suit, denom));
+					if (cardCt == 5) {
+						handRanking = HIGH_CARD;
+						return true;
+					}
+				}
+			}
+		}
 		return false;
 	}
 	

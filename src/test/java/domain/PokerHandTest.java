@@ -221,6 +221,24 @@ public class PokerHandTest {
 	}
 	
 	@Test
+	public void testTrips() {
+		ArrayList<Card> cards = new ArrayList<Card>();
+		cards.add(new Card(Card.DIAMONDS, Card.NINE));
+		cards.add(new Card(Card.SPADES, Card.EIGHT));
+		cards.add(new Card(Card.HEARTS, Card.EIGHT));
+		cards.add(new Card(Card.DIAMONDS, Card.EIGHT));
+		cards.add(new Card(Card.CLUBS, Card.FIVE));
+		cards.add(new Card(Card.HEARTS, Card.SEVEN));
+		cards.add(new Card(Card.HEARTS, Card.JACK));
+		
+		PokerHand ph = new PokerHand(cards);
+		assertTrue("Could not evaluate hand", ph.evaluateHand());
+		
+		assertTrue("Did not find three of a kind.",
+				ph.getHandRanking() == PokerHand.THREE_OF_A_KIND);
+	}
+	
+	@Test
 	public void testTwoPair() {
 		ArrayList<Card> cards = new ArrayList<Card>();
 		cards.add(new Card(Card.DIAMONDS, Card.NINE));
