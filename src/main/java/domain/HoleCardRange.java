@@ -12,14 +12,11 @@ import java.util.ArrayList;
  * @author marmadej
  *
  */
-public class PokerHandRange {
-	private ArrayList<PokerHand> pokerHands = new ArrayList<PokerHand>();
+public class HoleCardRange {
+	private ArrayList<HoleCards> holeCardCombos = new ArrayList<HoleCards>();
 	
-	/*
-	 * Thoughts
-	 * 
-	 * Should PokerHand be broken down, or shoudl some HoleCards class be created
-	 * where this is just a set of hole cards?  Seems better
-	 */
+	public HoleCardRange(ArrayList<HoleCards> hands) {
+		
+	}
 	
 }
