@@ -17,4 +17,12 @@ public class HoleCards {
 		}
 		this.holeCards = holeCards;
 	}
+	
+	/**
+	 * Given the percentage of hands, create a hand range that includes all of those cards.
+	 * @param percentage
+	 */
+	public HoleCards(int percentage) {
+		
+	}
 }
