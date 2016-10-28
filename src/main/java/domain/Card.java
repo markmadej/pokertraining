@@ -1,7 +1,5 @@
 package domain;
 
-import java.util.Comparator;
-
 public class Card {
 	
 	// Suit constants

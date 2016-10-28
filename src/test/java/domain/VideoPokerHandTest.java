@@ -6,8 +6,6 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import junit.framework.Assert;
-
 public class VideoPokerHandTest {
 
 	@Test
