@@ -1,5 +1,7 @@
 package domain;
 
+import java.util.Comparator;
+
 public class Card {
 	
 	// Suit constants
@@ -169,6 +171,42 @@ public class Card {
 		return tempStr;
 	}
 
+	/*
+	 * shortDenominationString() returns the 1 character string for a card's denomination, like A, K, 2.
+	 */
+	public String shortDenominationString() {
+		switch (denomination) {
+			case DEUCE:
+				return "2";
+			case TREY:
+				return "3";
+			case FOUR:
+				return "4";
+			case FIVE:
+				return "5";
+			case SIX:
+				return "6";
+			case SEVEN:
+				return "7";
+			case EIGHT:
+				return "8";
+			case NINE:
+				return "9";
+			case TEN:
+				return "T";
+			case JACK:
+				return "J";
+			case QUEEN:
+				return "Q";
+			case KING:
+				return "K";
+			case ACE:
+				return "A";
+			default:
+				throw new RuntimeException("Bad denomination value (" + denomination + ") in shortString.");
+		}
+	}
+	
 	public int getSuit() {
 		return suit;
 	}
@@ -176,5 +214,24 @@ public class Card {
 	public int getDenomination() {
 		return denomination;
 	}
+
+	public int compare(Card c1, Card c2) {
+		if (c1.getSuit() < c2.getSuit()) {
+			return -1;
+		}
+		if (c1.getSuit() > c2.getSuit()) {
+			return 1;
+		}
+		//Suits are the same, compare the denominations.
+		if (c1.getDenomination() == c2.getDenomination()) {
+			return 0;
+		}
+		if (c1.getDenomination() < c2.getDenomination()) {
+			return -1;
+		} else {
+			return 1;
+		}
+	}
+
 
 }
