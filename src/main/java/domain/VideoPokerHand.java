@@ -12,7 +12,7 @@ public class VideoPokerHand {
 	private String normalizedHand = null;
 
 
-	private int[] normalizedIndexes = null;
+	private int[] normalizedIndices = new int[5];
 	private Card[] originalCards = null;
 	private ArrayList<Card> sortedCards = new ArrayList<Card>(5);
 	
@@ -64,9 +64,7 @@ public class VideoPokerHand {
 						insertedCard = true;
 						break;	
 					} else {
-						sortedCards.add(j + 1, newCardToInsert);
-						insertedCard = true;
-						break;	
+						continue;
 					}
 				}
 				
@@ -110,7 +108,23 @@ public class VideoPokerHand {
 			}
 		}
 	}
+	
+	public void calculateNormalizedIndices() {
+		// Given originalCards and sortedCards, determine what position the cards in originalCards have moved to.
+		// Store those indices in normalizedIndices.
+		for (int i = 0; i < originalCards.length; i++) {
+			Card currICard = originalCards[i];
+			for (int j = 0; j < sortedCards.size(); j++) {
+				Card compareCard = sortedCards.get(j);
+				if (currICard == compareCard) {
+					normalizedIndices[i] = j;
+					break;
+				}
+			}
+		}
+	}
 
+	// This should only be called internally and from unit tests.  I left it public for ease of use in unit tests.
 	public String createNormalizedString(ArrayList<Card> normalizeCards) {
 		// Create the normalized string.
 		StringBuffer nb = new StringBuffer();
