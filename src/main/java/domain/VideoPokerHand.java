@@ -9,12 +9,32 @@ import java.util.Arrays;
  */
 public class VideoPokerHand {
 	
+	//Ranks are not yet factoring in deuces wild.  Focusing on double double bonus
+	public static final int RANK_NOT_CALCULATED = -1;
+	public static final int NOTHING 			= 0;
+	public static final int JACKS_OR_BETTER 	= 1;
+	public static final int TWO_PAIR 			= 2;
+	public static final int THREE_OF_A_KIND 	= 4;
+	public static final int STRAIGHT 			= 5;
+	public static final int FLUSH 				= 6;
+	public static final int FULL_HOUSE 			= 7;
+	public static final int FOUR_FIVES 			= 8;  //Four 5s-Ks.
+	public static final int FOUR_DEUCES 		= 9;  //Four 2s, 3s, 4s.
+	public static final int FOUR_DEUCES_KICKER 	= 10;
+	public static final int FOUR_ACES 			= 11;
+	public static final int FOUR_ACES_KICKER	= 12;  //Aces with 2, 3, 4 kicker.
+	public static final int STRAIGHT_FLUSH 		= 13;
+	public static final int ROYAL_FLUSH 		= 14;
+	
 	private String normalizedHand = null;
-
+	private int handRank = RANK_NOT_CALCULATED;
 
 	private int[] normalizedIndices;
 	private Card[] originalCards = null;
 	private ArrayList<Card> sortedCards = new ArrayList<Card>(5);
+	
+	// This empty constructor is intended for use with unit tests only.
+	public VideoPokerHand() { }
 	
 	public VideoPokerHand(ArrayList<Card> cards) {
 		normalizeCards(cards);
@@ -168,5 +188,113 @@ public class VideoPokerHand {
 		// This was created solely for use within unit tests.
 		// No guarantees on this method's behavior are given if this is applied to any other use cases.
 		return sortedCards;
+	}
+	
+	// This function calculates the rank of the 5 card hand we currently have.
+	public int calculateBestRank(Card[] cards) {
+		boolean flush = true;
+		int[] numPerCard = new int[14];
+		Arrays.fill(numPerCard, 0);
+		int suitToMatch = cards[0].getSuit();
+		for (int i = 0; i < 5; i++) {
+			Card c = cards[i];
+			if (c.getSuit() != suitToMatch) {
+				flush = false;
+			}
+			numPerCard[c.getDenomination()] = numPerCard[c.getDenomination()] + 1;
+		}
+		
+		boolean straight = false;
+		int straightCards = 0;
+		if (numPerCard[Card.ACE] == 1) {
+			//Prep for the wheel
+			straightCards = 1;
+		}
+
+		for (int i = Card.DEUCE; i <= Card.ACE; i++) {
+			if (numPerCard[i] == 1) {
+				straightCards++;
+				if (straightCards == 5) {
+					straight = true;
+					break;
+				}
+			} else {
+				straightCards = 0;
+			}
+		}
+		if (flush == true && straight == true) {
+			if (numPerCard[Card.ACE] == 1 && numPerCard[Card.TEN] == 1) {
+				return ROYAL_FLUSH;
+			} else {
+				return STRAIGHT_FLUSH;
+			}
+		}
+		if (flush == true) {
+			return FLUSH;
+		}
+		if (straight == true) {
+			return STRAIGHT;
+		}
+		
+		// At this point we have ruled out any kinds of straights or flushes.
+		
+		int numPairs = 0;
+		int tripsDenom = -1;
+		int quadDenom = -1;
+		boolean jacksOrBetter = false;
+		boolean aceKicker = false;
+		boolean kicker234 = false;
+		for (int i = Card.DEUCE; i <= Card.ACE; i++) {
+			switch (numPerCard[i]) {
+			case 4:
+				quadDenom = i;
+				break;
+			case 3:
+				tripsDenom = i;
+				break;
+			case 2:
+				numPairs++;
+				if (i >= Card.JACK) {
+					jacksOrBetter = true;
+				}
+				break;
+			case 1:
+				if (i == Card.ACE) {
+					aceKicker = true;
+				} else if (i == Card.DEUCE || i == Card.TREY || i == Card.FOUR) {
+					kicker234 = true;
+				}
+			}
+		}
+		
+		if (quadDenom != -1) {
+			//We have quads, but need to determine which one.
+			if (quadDenom == Card.ACE) {
+				if (kicker234 == true) {
+					return FOUR_ACES_KICKER;
+				} else {
+					return FOUR_ACES;
+				}
+			}
+			if (quadDenom >= Card.FIVE) {
+				return FOUR_FIVES;
+			}
+			// At this point we have quad 2s, 3s, or 4s.
+			if (aceKicker == true) {
+				return FOUR_DEUCES_KICKER;
+			} else {
+				return FOUR_DEUCES;
+			}
+		}
+		if (tripsDenom != -1 && numPairs == 1) {
+			return FULL_HOUSE;
+		}
+		if (numPairs == 2) {
+			return TWO_PAIR;
+		}
+		if (jacksOrBetter == true) {
+			return JACKS_OR_BETTER;
+		}
+		return NOTHING;  // Sad face.  
 	}
 }

@@ -9,6 +9,188 @@ import org.junit.Test;
 public class VideoPokerHandTest {
 
 	@Test
+	public void bestRankTestRoyal() {
+		Card[] cards = new Card[5];
+		cards[0] = new Card(Card.HEARTS, Card.JACK);
+		cards[1] = new Card(Card.HEARTS, Card.ACE);
+		cards[2] = new Card(Card.HEARTS, Card.KING);
+		cards[3] = new Card(Card.HEARTS, Card.QUEEN);
+		cards[4] = new Card(Card.HEARTS, Card.TEN);
+		
+		VideoPokerHand vph = new VideoPokerHand();
+		int rank = vph.calculateBestRank(cards);
+		assertTrue("A royal flush was not found : " + rank, rank == VideoPokerHand.ROYAL_FLUSH);
+	}
+	
+	@Test
+	public void bestRankTestFourKings() {
+		Card[] cards = new Card[5];
+		cards[0] = new Card(Card.HEARTS, Card.FOUR);
+		cards[1] = new Card(Card.SPADES, Card.KING);
+		cards[2] = new Card(Card.DIAMONDS, Card.KING);
+		cards[3] = new Card(Card.HEARTS, Card.KING);
+		cards[4] = new Card(Card.CLUBS, Card.KING);
+		
+		VideoPokerHand vph = new VideoPokerHand();
+		int rank = vph.calculateBestRank(cards);
+		assertTrue("Four kings was not found : " + rank, rank == VideoPokerHand.FOUR_FIVES);
+	}
+	
+	@Test
+	public void bestRankTestFourAcesNoKicker() {
+		Card[] cards = new Card[5];
+		cards[0] = new Card(Card.HEARTS, Card.ACE);
+		cards[1] = new Card(Card.SPADES, Card.ACE);
+		cards[2] = new Card(Card.DIAMONDS, Card.ACE);
+		cards[3] = new Card(Card.HEARTS, Card.KING);
+		cards[4] = new Card(Card.CLUBS, Card.ACE);
+		
+		VideoPokerHand vph = new VideoPokerHand();
+		int rank = vph.calculateBestRank(cards);
+		assertTrue("Four aces was not found : " + rank, rank == VideoPokerHand.FOUR_ACES);
+	}
+	
+	@Test
+	public void bestRankTestFourAcesWithKicker() {
+		Card[] cards = new Card[5];
+		cards[0] = new Card(Card.HEARTS, Card.ACE);
+		cards[1] = new Card(Card.SPADES, Card.ACE);
+		cards[2] = new Card(Card.DIAMONDS, Card.ACE);
+		cards[3] = new Card(Card.HEARTS, Card.FOUR);
+		cards[4] = new Card(Card.CLUBS, Card.ACE);
+		
+		VideoPokerHand vph = new VideoPokerHand();
+		int rank = vph.calculateBestRank(cards);
+		assertTrue("Four aces with kicker was not found : " + rank, rank == VideoPokerHand.FOUR_ACES_KICKER);
+	}
+	
+	@Test
+	public void bestRankTestFourDeucesNoKicker() {
+		Card[] cards = new Card[5];
+		cards[0] = new Card(Card.HEARTS, Card.SEVEN);
+		cards[1] = new Card(Card.SPADES, Card.DEUCE);
+		cards[2] = new Card(Card.DIAMONDS, Card.DEUCE);
+		cards[3] = new Card(Card.HEARTS, Card.DEUCE);
+		cards[4] = new Card(Card.CLUBS, Card.DEUCE);
+		
+		VideoPokerHand vph = new VideoPokerHand();
+		int rank = vph.calculateBestRank(cards);
+		assertTrue("Four deuces was not found : " + rank, rank == VideoPokerHand.FOUR_DEUCES);
+	}
+	
+	@Test
+	public void bestRankTestFourDeucesWithKicker() {
+		Card[] cards = new Card[5];
+		cards[0] = new Card(Card.HEARTS, Card.ACE);
+		cards[1] = new Card(Card.SPADES, Card.DEUCE);
+		cards[2] = new Card(Card.DIAMONDS, Card.DEUCE);
+		cards[3] = new Card(Card.HEARTS, Card.DEUCE);
+		cards[4] = new Card(Card.CLUBS, Card.DEUCE);
+		
+		VideoPokerHand vph = new VideoPokerHand();
+		int rank = vph.calculateBestRank(cards);
+		assertTrue("Four deuces with kicker was not found : " + rank, rank == VideoPokerHand.FOUR_DEUCES_KICKER);
+	}
+	
+	@Test
+	public void bestRankTestStraightFlush() {
+		Card[] cards = new Card[5];
+		cards[0] = new Card(Card.DIAMONDS, Card.FOUR);
+		cards[1] = new Card(Card.DIAMONDS, Card.SEVEN);
+		cards[2] = new Card(Card.DIAMONDS, Card.SIX);
+		cards[3] = new Card(Card.DIAMONDS, Card.EIGHT);
+		cards[4] = new Card(Card.DIAMONDS, Card.FIVE);
+		
+		VideoPokerHand vph = new VideoPokerHand();
+		int rank = vph.calculateBestRank(cards);
+		assertTrue("Straight flush was not found : " + rank, rank == VideoPokerHand.STRAIGHT_FLUSH);
+	}
+	
+	@Test
+	public void bestRankTestFullHouse() {
+		Card[] cards = new Card[5];
+		cards[0] = new Card(Card.DIAMONDS, Card.EIGHT);
+		cards[1] = new Card(Card.CLUBS, Card.FIVE);
+		cards[2] = new Card(Card.CLUBS, Card.EIGHT);
+		cards[3] = new Card(Card.SPADES, Card.EIGHT);
+		cards[4] = new Card(Card.HEARTS, Card.FIVE);
+		
+		VideoPokerHand vph = new VideoPokerHand();
+		int rank = vph.calculateBestRank(cards);
+		assertTrue("A full house was not found : " + rank, rank == VideoPokerHand.FULL_HOUSE);
+	}
+	
+	@Test
+	public void bestRankTestStraight() {
+		Card[] cards = new Card[5];
+		cards[0] = new Card(Card.DIAMONDS, Card.FOUR);
+		cards[1] = new Card(Card.DIAMONDS, Card.SEVEN);
+		cards[2] = new Card(Card.HEARTS, Card.SIX);
+		cards[3] = new Card(Card.DIAMONDS, Card.EIGHT);
+		cards[4] = new Card(Card.DIAMONDS, Card.FIVE);
+		
+		VideoPokerHand vph = new VideoPokerHand();
+		int rank = vph.calculateBestRank(cards);
+		assertTrue("Straight was not found : " + rank, rank == VideoPokerHand.STRAIGHT);
+	}
+	
+	@Test
+	public void bestRankTestFlush() {
+		Card[] cards = new Card[5];
+		cards[0] = new Card(Card.DIAMONDS, Card.FOUR);
+		cards[1] = new Card(Card.DIAMONDS, Card.SEVEN);
+		cards[2] = new Card(Card.DIAMONDS, Card.SIX);
+		cards[3] = new Card(Card.DIAMONDS, Card.TEN);
+		cards[4] = new Card(Card.DIAMONDS, Card.FIVE);
+		
+		VideoPokerHand vph = new VideoPokerHand();
+		int rank = vph.calculateBestRank(cards);
+		assertTrue("Flush was not found : " + rank, rank == VideoPokerHand.FLUSH);
+	}
+	
+	@Test
+	public void bestRankTestTwoPair() {
+		Card[] cards = new Card[5];
+		cards[0] = new Card(Card.DIAMONDS, Card.FIVE);
+		cards[1] = new Card(Card.CLUBS, Card.JACK);
+		cards[2] = new Card(Card.HEARTS, Card.FIVE);
+		cards[3] = new Card(Card.DIAMONDS, Card.JACK);
+		cards[4] = new Card(Card.SPADES, Card.SEVEN);
+		
+		VideoPokerHand vph = new VideoPokerHand();
+		int rank = vph.calculateBestRank(cards);
+		assertTrue("Two pair was not found : " + rank, rank == VideoPokerHand.TWO_PAIR);
+	}
+	
+	@Test
+	public void bestRankTestJacksOrBetter() {
+		Card[] cards = new Card[5];
+		cards[0] = new Card(Card.DIAMONDS, Card.FIVE);
+		cards[1] = new Card(Card.CLUBS, Card.JACK);
+		cards[2] = new Card(Card.HEARTS, Card.ACE);
+		cards[3] = new Card(Card.DIAMONDS, Card.JACK);
+		cards[4] = new Card(Card.SPADES, Card.SEVEN);
+		
+		VideoPokerHand vph = new VideoPokerHand();
+		int rank = vph.calculateBestRank(cards);
+		assertTrue("Jacks or better was not found : " + rank, rank == VideoPokerHand.JACKS_OR_BETTER);
+	}
+
+	@Test
+	public void bestRankTestNothing() {
+		Card[] cards = new Card[5];
+		cards[0] = new Card(Card.DIAMONDS, Card.FIVE);
+		cards[1] = new Card(Card.CLUBS, Card.JACK);
+		cards[2] = new Card(Card.HEARTS, Card.ACE);
+		cards[3] = new Card(Card.DIAMONDS, Card.FIVE);
+		cards[4] = new Card(Card.SPADES, Card.SEVEN);
+		
+		VideoPokerHand vph = new VideoPokerHand();
+		int rank = vph.calculateBestRank(cards);
+		assertTrue("Nothing was not found (irony much): " + rank, rank == VideoPokerHand.NOTHING);
+	}
+	
+	@Test
 	public void testNormalizedIndices1() {
 		// Start : 5c8cAsAdJs
 		// End :   AsJs8c5cAd
