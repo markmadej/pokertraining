@@ -12,13 +12,14 @@ public class VideoPokerHand {
 	private String normalizedHand = null;
 
 
-	private int[] normalizedIndices = new int[5];
+	private int[] normalizedIndices;
 	private Card[] originalCards = null;
 	private ArrayList<Card> sortedCards = new ArrayList<Card>(5);
 	
 	public VideoPokerHand(ArrayList<Card> cards) {
 		normalizeCards(cards);
 		normalizedHand = createNormalizedString(sortedCards);
+		normalizedIndices = calculateNormalizedIndices(originalCards, sortedCards);
 	}
 
 	/*
@@ -35,6 +36,10 @@ public class VideoPokerHand {
 	 * Change suits to suit 1, 2, 3 (ie AcJcAdJd5s would translate to A1J1A2J253)
 	 */
 	private void normalizeCards(ArrayList<Card> cards) {
+		
+		if (cards.size() != 5) {
+			throw new RuntimeException("Tried to normalize a hand with " + cards.size() + " (ie. not 5) cards.");
+		}
 		int[] cardsPerSuit = new int[5]; // Need 5 since suits are currently 1-indexed
 		Arrays.fill(cardsPerSuit, 0);
 		sortedCards.clear(); 
@@ -109,19 +114,30 @@ public class VideoPokerHand {
 		}
 	}
 	
-	public void calculateNormalizedIndices() {
+	private int[] calculateNormalizedIndices(Card[] originals, ArrayList<Card> sorted) {
 		// Given originalCards and sortedCards, determine what position the cards in originalCards have moved to.
-		// Store those indices in normalizedIndices.
-		for (int i = 0; i < originalCards.length; i++) {
-			Card currICard = originalCards[i];
-			for (int j = 0; j < sortedCards.size(); j++) {
-				Card compareCard = sortedCards.get(j);
-				if (currICard == compareCard) {
-					normalizedIndices[i] = j;
+		int[] returnIndices = new int[5];
+		for (int i = 0; i < originals.length; i++) {
+			Card currICard = originals[i];
+			for (int j = 0; j < sorted.size(); j++) {
+				Card compareCard = sorted.get(j);
+				if (currICard.getSuit() == compareCard.getSuit() &&
+						currICard.getDenomination() == compareCard.getDenomination()) {
+					returnIndices[i] = j;
 					break;
 				}
 			}
 		}
+		return returnIndices;
+	}
+	
+	//Public for easy unit test creation.
+	public int[] calculateNormalizedIndices(ArrayList<Card> originals, ArrayList<Card> sorted) {
+		Card[] orig = new Card[5];
+		for (int i = 0; i < 5; i++) {
+			orig[i] = originals.get(i);
+		}
+		return calculateNormalizedIndices(orig, sorted);
 	}
 
 	// This should only be called internally and from unit tests.  I left it public for ease of use in unit tests.

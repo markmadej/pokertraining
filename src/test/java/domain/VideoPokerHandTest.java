@@ -9,6 +9,90 @@ import org.junit.Test;
 public class VideoPokerHandTest {
 
 	@Test
+	public void testNormalizedIndices1() {
+		// Start : 5c8cAsAdJs
+		// End :   AsJs8c5cAd
+		// End[] : 3,2,0,4,1
+		
+		ArrayList<Card> cards = new ArrayList<Card>();
+		cards.add(new Card(Card.CLUBS, Card.FIVE));
+		cards.add(new Card(Card.CLUBS, Card.EIGHT));
+		cards.add(new Card(Card.SPADES, Card.ACE));
+		cards.add(new Card(Card.DIAMONDS, Card.ACE));
+		cards.add(new Card(Card.SPADES, Card.JACK));
+		
+		// I'm using a separate sorted array as opposed to whatever VideoPokerHand generates
+		// to ensure that I'm ONLY testing out calculatedNormalizedIndices and nothing else.
+		ArrayList<Card> sortedCards = new ArrayList<Card>();
+		sortedCards.add(new Card(Card.SPADES, Card.ACE));
+		sortedCards.add(new Card(Card.SPADES, Card.JACK));
+		sortedCards.add(new Card(Card.CLUBS, Card.EIGHT));
+		sortedCards.add(new Card(Card.CLUBS, Card.FIVE));
+		sortedCards.add(new Card(Card.DIAMONDS, Card.ACE));
+		
+		VideoPokerHand vph = new VideoPokerHand(cards);
+		int[] indices = vph.calculateNormalizedIndices(cards, sortedCards);
+		int[] expectedIndices = {3,2,0,4,1};
+		for (int i = 0; i < 5; i++) {
+			assertTrue("Index " + i + " was " + indices[i] + ", not " + expectedIndices[i],
+					indices[i] == expectedIndices[i]);
+		}
+	}
+	
+	@Test
+	public void testNormalizedIndices2NoChange() {
+		// Start : KsJs5s9c5c
+		// End :   same
+		// End[] : 0,1,2,3,4
+		
+		ArrayList<Card> cards = new ArrayList<Card>();
+		cards.add(new Card(Card.SPADES, Card.KING));
+		cards.add(new Card(Card.SPADES, Card.JACK));
+		cards.add(new Card(Card.SPADES, Card.FIVE));
+		cards.add(new Card(Card.CLUBS, Card.NINE));
+		cards.add(new Card(Card.CLUBS, Card.FIVE));
+		
+		VideoPokerHand vph = new VideoPokerHand(cards);
+		int[] indices = vph.calculateNormalizedIndices(cards, cards);
+		int[] expectedIndices = {0,1,2,3,4};
+		for (int i = 0; i < 5; i++) {
+			assertTrue("Index " + i + " was " + indices[i] + ", not " + expectedIndices[i],
+					indices[i] == expectedIndices[i]);
+		}
+	}
+	
+	@Test
+	public void testNormalizedIndices3() {
+		// Start : 4cJhJd7c5c
+		// End :   7c5c4cJhJd
+		// End[] : 2,3,4,0,1
+		
+		ArrayList<Card> cards = new ArrayList<Card>();
+		cards.add(new Card(Card.CLUBS, Card.FOUR));
+		cards.add(new Card(Card.HEARTS, Card.JACK));
+		cards.add(new Card(Card.DIAMONDS, Card.JACK));
+		cards.add(new Card(Card.CLUBS, Card.SEVEN));
+		cards.add(new Card(Card.CLUBS, Card.FIVE));
+		
+		// I'm using a separate sorted array as opposed to whatever VideoPokerHand generates
+		// to ensure that I'm ONLY testing out calculatedNormalizedIndices and nothing else.
+		ArrayList<Card> sortedCards = new ArrayList<Card>();
+		sortedCards.add(new Card(Card.CLUBS, Card.SEVEN));
+		sortedCards.add(new Card(Card.CLUBS, Card.FIVE));
+		sortedCards.add(new Card(Card.CLUBS, Card.FOUR));
+		sortedCards.add(new Card(Card.HEARTS, Card.JACK));
+		sortedCards.add(new Card(Card.DIAMONDS, Card.JACK));
+
+		VideoPokerHand vph = new VideoPokerHand(cards);
+		int[] indices = vph.calculateNormalizedIndices(cards, sortedCards);
+		int[] expectedIndices = {2,3,4,0,1};
+		for (int i = 0; i < 5; i++) {
+			assertTrue("Index " + i + " was " + indices[i] + ", not " + expectedIndices[i],
+					indices[i] == expectedIndices[i]);
+		}
+	}
+	
+	@Test
 	public void testSort1AlreadySorted() {
 		// Test hand : AcJcAdJd5s
 		// Rearranged : AcJcAdJc5s (same)
