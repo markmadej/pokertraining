@@ -36,11 +36,45 @@ public class VideoPokerHand {
 	// This empty constructor is intended for use with unit tests only.
 	public VideoPokerHand() { }
 	
+	// This function takes a string of 5 cards like this:
+	// - AcJc5d7s7h
+	public VideoPokerHand(String cardStr) {
+		if (cardStr.length() != 10) {
+			throw new RuntimeException("Can't create a video poker hand with a " + cardStr.length() + " length string:" + cardStr);
+		}
+		ArrayList<Card> cards = new ArrayList<Card>(5);
+		for (int i = 0; i < 5; i++) {
+			String cStr = cardStr.substring(i*2, (i*2)+2);
+			Card c = new Card(cStr);
+			cards.add(c);
+		}
+		initializeHandData(cards);
+	}
+	
+	public VideoPokerHand(int[] cardNums) {
+		// This leverages the integer constructor of Card.
+		if (cardNums.length != 5) {
+			throw new RuntimeException("Tried to create VideoPokerHand with " + cardNums.length + " cards - invalid.");
+		}
+		ArrayList<Card> cards = new ArrayList<Card>(5);
+		for (int i = 0; i < 5; i++) {
+			Card c = new Card(cardNums[i]);
+			cards.add(c);
+		}
+		initializeHandData(cards);
+	}
+	
 	public VideoPokerHand(ArrayList<Card> cards) {
+		initializeHandData(cards);
+	}
+
+	private void initializeHandData(ArrayList<Card> cards) {
 		normalizeCards(cards);
 		normalizedHand = createNormalizedString(sortedCards);
 		normalizedIndices = calculateNormalizedIndices(originalCards, sortedCards);
+		handRank = calculateBestRank(originalCards);
 	}
+	
 
 	/*
 	 * To optimize for storage space as much as possible, we should normalize
@@ -126,8 +160,8 @@ public class VideoPokerHand {
 				// We need to flip the first two cards with the second two cards.
 				Card tmp1 = sortedCards.get(0);
 				Card tmp2 = sortedCards.get(1);
-				Card c3 = sortedCards.remove(2);
-				Card c4 = sortedCards.remove(2);
+				sortedCards.remove(0);
+				sortedCards.remove(0);
 				sortedCards.add(2, tmp2);
 				sortedCards.add(2, tmp1);
 			}
@@ -296,5 +330,46 @@ public class VideoPokerHand {
 			return JACKS_OR_BETTER;
 		}
 		return NOTHING;  // Sad face.  
+	}
+	
+	public String getHumanReadableRank(int rank) {
+		switch (rank) {
+			case RANK_NOT_CALCULATED:
+				return "Not calculated";
+			case NOTHING:
+				return "Nothing";
+			case JACKS_OR_BETTER:
+			return "Jacks or better";
+			case TWO_PAIR:
+				return "Two pair";
+			case THREE_OF_A_KIND:
+				return "Three of a kind";
+			case STRAIGHT:
+				return "Straight";
+			case FLUSH:
+				return "Flush";
+			case FULL_HOUSE:
+				return "Full house";
+			case FOUR_FIVES:
+				return "Four fives through kings";
+			case FOUR_DEUCES:
+				return "Four deuces through fours";
+			case FOUR_DEUCES_KICKER:
+				return "Four deuces through fours with kicker";
+			case FOUR_ACES:
+				return "Four aces";
+			case FOUR_ACES_KICKER:
+				return "Four aces with kicker";
+			case STRAIGHT_FLUSH:
+				return "Straight flush";
+			case ROYAL_FLUSH:
+				return "Royal flush";
+			default:
+				return "ERROR : Rank not found : " + rank;
+		}
+	}
+
+	public int getHandRank() {
+		return handRank;
 	}
 }

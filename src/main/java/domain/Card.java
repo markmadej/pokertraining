@@ -26,6 +26,91 @@ public class Card {
 	private int suit = 0;
 	private int denomination = 0;
 	
+	public Card(int cardNumber) {
+		// cardNumber is used as follows:
+		// integer divide by 13.  That number + 1 tells us our suit number.
+		// remainder after dividing by 13 is our denomination.
+		int newSuit = 1;
+		while (cardNumber > 13) {
+			cardNumber = cardNumber - 13;
+			newSuit++;
+		}
+		this.suit = newSuit;
+		this.denomination = cardNumber;
+		
+
+	}
+	
+	public Card(String shortString) {
+		if (shortString.length() != 2) 
+			throw new RuntimeException("Bad short string:" + shortString);
+		
+		shortString = shortString.toUpperCase();
+		char dc = shortString.charAt(0);
+		char sc = shortString.charAt(1);
+		
+		switch (dc) {
+			case 'A':
+				this.denomination = Card.ACE;
+				break;
+			case 'K':
+				this.denomination = Card.KING;
+				break;
+			case 'Q':
+				this.denomination = Card.QUEEN;
+				break;
+			case 'J':
+				this.denomination = Card.JACK;
+				break;
+			case 'T':
+				this.denomination = Card.TEN;
+				break;
+			case '9':
+				this.denomination = Card.NINE;
+				break;
+			case '8':
+				this.denomination = Card.EIGHT;
+				break;
+			case '7':
+				this.denomination = Card.SEVEN;
+				break;
+			case '6':
+				this.denomination = Card.SIX;
+				break;
+			case '5':
+				this.denomination = Card.FIVE;
+				break;
+			case '4':
+				this.denomination = Card.FOUR;
+				break;
+			case '3':
+				this.denomination = Card.TREY;
+				break;
+			case '2':
+				this.denomination = Card.DEUCE;
+				break;
+			default:
+				throw new RuntimeException("Bad denomination character:" + dc);
+		}
+		
+		switch(sc) {
+			case 'C':
+				this.suit = Card.CLUBS;
+				return;
+			case 'D':
+				this.suit = Card.DIAMONDS;
+				return;
+			case 'H':
+				this.suit = Card.HEARTS;
+				return;
+			case 'S':
+				this.suit = Card.SPADES;
+				return;
+			default:
+				throw new RuntimeException("Not a valid suit character:" + sc);
+		}
+	}
+	
 	public Card (int suit, int denomination) {
 		if (suit < Card.CLUBS || suit > Card.SPADES) {
 			throw new RuntimeException("Suit value " + suit + " is out of range.");
