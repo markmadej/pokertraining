@@ -65,4 +65,23 @@ public class CardTest extends TestCase {
 		}
 		
 	}
+	
+	@Test
+	public void testEquality() {
+		Card c1 = new Card("As");
+		Card c2 = new Card(Card.SPADES, Card.ACE);
+		assertTrue("Cards were not equal: c1=" + c1 + " c2=" + c2, c1.equals(c2));
+		
+		c1 = new Card("Jc");
+		c2 = new Card(Card.SPADES, Card.JACK);
+		assertTrue("Cards were equal and shouldnt be: c1=" + c1 + " c2=" + c2, !c1.equals(c2));
+		
+		c1 = new Card("Jc");
+		c2 = new Card(Card.CLUBS, Card.TREY);
+		assertTrue("Cards were equal and shouldnt be: c1=" + c1 + " c2=" + c2, !c1.equals(c2));
+		
+		c1 = new Card(Card.DIAMONDS, Card.FIVE);
+		c2 = new Card(Card.DIAMONDS, Card.FIVE);
+		assertTrue("Cards were not equal: c1=" + c1 + " c2=" + c2, c1.equals(c2));
+	}
 }

@@ -446,8 +446,8 @@ public class VideoPokerHandTest {
 		String expectedNormalized = "5141524344";
 		assertTrue("Normalized string was " + vph.getNormalizedHand() + " instead of " + expectedNormalized, vph.getNormalizedHand().equals(expectedNormalized));
 	}
-	@Test
 	
+	@Test
 	public void testStraightFlush() {
 		// Test hand : 4s3s6s7s5s
 		// Result with numbers : 7161514131
@@ -465,6 +465,7 @@ public class VideoPokerHandTest {
 		assertTrue("Normalized string was " + vph.getNormalizedHand() + " instead of " + expectedNormalized, vph.getNormalizedHand().equals(expectedNormalized));
 	}
 	
+	@Test
 	public void testStraightWith2ToASuit() {
 		// Test hand : 5h7c6s8s9d
 		// Result rearranged : 8s6s9d7c5h
@@ -483,6 +484,7 @@ public class VideoPokerHandTest {
 		assertTrue("Normalized string was " + vph.getNormalizedHand() + " instead of " + expectedNormalized, vph.getNormalizedHand().equals(expectedNormalized));
 	}
 
+	@Test
 	public void testFourOfAKind() {
 		// Test hand : 2s2dAc2c2h
 		// Normalized result : A121222324
@@ -500,4 +502,19 @@ public class VideoPokerHandTest {
 		assertTrue("Normalized string was " + vph.getNormalizedHand() + " instead of " + expectedNormalized, vph.getNormalizedHand().equals(expectedNormalized));
 	}
 
+	@Test
+	public void testStringCreation() {
+		ArrayList<Card> cards = new ArrayList<Card>();
+		cards.add(new Card(Card.SPADES, Card.ACE));
+		cards.add(new Card(Card.SPADES, Card.JACK));
+		cards.add(new Card(Card.SPADES, Card.TEN));
+		cards.add(new Card(Card.HEARTS, Card.FOUR));
+		cards.add(new Card(Card.CLUBS, Card.FOUR));
+		
+		VideoPokerHand vph = new VideoPokerHand("AsJsTs4h4c");
+		for (Card c : vph.getOriginalCards()) {
+			Card compareCard = cards.remove(0);
+			assertTrue(c.getSuit() == compareCard.getSuit() && c.getDenomination() == compareCard.getDenomination());
+		}
+	}
 }

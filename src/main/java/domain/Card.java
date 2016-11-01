@@ -316,5 +316,15 @@ public class Card {
 		}
 	}
 
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof Card)) {
+			return false;
+		}
+		Card c1 = (Card) obj;
 
+		return (c1.getSuit() == this.getSuit() && c1.getDenomination() == this.getDenomination());
+	}
 }
