@@ -40,7 +40,7 @@ public class ComboRank {
 	
 	public void incrementCounterForRank(int rank) {
 		// rank = the constant values in VideoPokerHand for different results (jacks or better, etc)
-		if (rank < 0 || rank > 14) {
+		if (rank < VideoPokerHand.MIN_RANK_INTEGER || rank > VideoPokerHand.MAX_RANK_INTEGER) {
 			throw new RuntimeException("Tried to increment rank counter for invalid rank : " + rank);
 		}
 		rankResults[rank] = rankResults[rank] + 1;
@@ -58,6 +58,25 @@ public class ComboRank {
 		return rankResults;
 	}
 	
+	public int getRankTotal(int rank) {
+		if (rank < VideoPokerHand.MIN_RANK_INTEGER || rank > VideoPokerHand.MAX_RANK_INTEGER) {
+			throw new RuntimeException("Tried to retrieve rank counter for invalid rank : " + rank);
+		}
+		return rankResults[rank];
+	}
+	
+	/*
+	 * This is mostly used in unit tests to determine how many combinations have been
+	 * calculated.  It may have other uses though.
+	 */
+	public int getTotalIterations() {
+		int total = 0;
+		for (int i = 0; i < rankResults.length; i++) {
+			total += rankResults[i];
+		}
+		return total;
+	}
+	
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("ComboRank:{\n");
@@ -70,7 +89,7 @@ public class ComboRank {
 		}
 
 		VideoPokerHand vph = new VideoPokerHand();
-		for (int i = 0; i < 14; i++) {
+		for (int i = VideoPokerHand.MIN_RANK_INTEGER; i <= VideoPokerHand.MAX_RANK_INTEGER; i++) {
 			sb.append("\n");
 			sb.append(vph.getHumanReadableRank(i));
 			sb.append(":");

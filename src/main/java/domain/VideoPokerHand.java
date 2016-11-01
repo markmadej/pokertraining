@@ -9,22 +9,25 @@ import java.util.Arrays;
  */
 public class VideoPokerHand {
 	
+	public static final int MIN_RANK_INTEGER = 1;
+	public static final int MAX_RANK_INTEGER = 14;
+	
 	//Ranks are not yet factoring in deuces wild.  Focusing on double double bonus
 	public static final int RANK_NOT_CALCULATED = -1;
-	public static final int NOTHING 			= 0;
-	public static final int JACKS_OR_BETTER 	= 1;
-	public static final int TWO_PAIR 			= 2;
-	public static final int THREE_OF_A_KIND 	= 3;
-	public static final int STRAIGHT 			= 4;
-	public static final int FLUSH 				= 5;
-	public static final int FULL_HOUSE 			= 6;
-	public static final int FOUR_FIVES 			= 7;  //Four 5s-Ks.
-	public static final int FOUR_DEUCES 		= 8;  //Four 2s, 3s, 4s.
-	public static final int FOUR_DEUCES_KICKER 	= 9;
-	public static final int FOUR_ACES 			= 10;
-	public static final int FOUR_ACES_KICKER	= 11;  //Aces with 2, 3, 4 kicker.
-	public static final int STRAIGHT_FLUSH 		= 12;
-	public static final int ROYAL_FLUSH 		= 13;
+	public static final int NOTHING 			= 1;
+	public static final int JACKS_OR_BETTER 	= 2;
+	public static final int TWO_PAIR 			= 3;
+	public static final int THREE_OF_A_KIND 	= 4;
+	public static final int STRAIGHT 			= 5;
+	public static final int FLUSH 				= 6;
+	public static final int FULL_HOUSE 			= 7;
+	public static final int FOUR_FIVES 			= 8;  //Four 5s-Ks.
+	public static final int FOUR_DEUCES 		= 9;  //Four 2s, 3s, 4s.
+	public static final int FOUR_DEUCES_KICKER 	= 10;
+	public static final int FOUR_ACES 			= 11;
+	public static final int FOUR_ACES_KICKER	= 12;  //Aces with 2, 3, 4 kicker.
+	public static final int STRAIGHT_FLUSH 		= 13;
+	public static final int ROYAL_FLUSH 		= 14;
 	
 	private String normalizedHand = null;
 	private int handRank = RANK_NOT_CALCULATED;
@@ -230,7 +233,7 @@ public class VideoPokerHand {
 	// This function calculates the rank of the 5 card hand we currently have.
 	public int calculateBestRank(Card[] cards) {
 		boolean flush = true;
-		int[] numPerCard = new int[14];
+		int[] numPerCard = new int[MAX_RANK_INTEGER];
 		Arrays.fill(numPerCard, 0);
 		int suitToMatch = cards[0].getSuit();
 		for (int i = 0; i < 5; i++) {

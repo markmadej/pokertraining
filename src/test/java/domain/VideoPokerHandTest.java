@@ -23,6 +23,19 @@ public class VideoPokerHandTest {
 	}
 	
 	@Test
+	public void testNormalizedRoyalString() {
+		ArrayList<Card> cards = new ArrayList<Card>();
+		cards.add(new Card(Card.CLUBS, Card.ACE));
+		cards.add(new Card(Card.CLUBS, Card.JACK));
+		cards.add(new Card(Card.CLUBS, Card.TEN));
+		cards.add(new Card(Card.CLUBS, Card.QUEEN));
+		cards.add(new Card(Card.CLUBS, Card.KING));
+		
+		VideoPokerHand vph = new VideoPokerHand(cards);
+		assertTrue("Normalized string was " + vph.getNormalizedHand(), vph.getNormalizedHand().equals("A1K1Q1J1T1"));
+	}
+	
+	@Test
 	public void bestRankTestFourKings() {
 		Card[] cards = new Card[5];
 		cards[0] = new Card(Card.HEARTS, Card.FOUR);

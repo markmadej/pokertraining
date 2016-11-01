@@ -19,7 +19,7 @@ public class VPCalc {
 		int ct = 0;
 		for (ComboRank cbr : solution) {
 			ct++;
-			System.out.println("ComboRank " + ct + ":");
+			System.out.println("ComboRank " + ct + ":\n" + cbr.toString());
 		}
 	}
 	
@@ -63,16 +63,26 @@ public class VPCalc {
 		return comboRanks;
 	}
 	
+	public ArrayList<Card> getPossibleRemainingCards(ArrayList<Card> deadCards) {
+		return getPossibleRemainingCards(deadCards, null);
+	}
 	/*
 	 * Return an ArrayList<Card> structure with all cards that are not in the given list.
+	 * If forceSingleCard != null, the only possibility is an ArrayList<Card> with that one card.
 	 */
-	public ArrayList<Card> getPossibleRemainingCards(Card[] deadCards) {
-		ArrayList<Card> remainingCards = new ArrayList<Card>(52 - deadCards.length);
+	public ArrayList<Card> getPossibleRemainingCards(ArrayList<Card> deadCards, Card forceSingleCard) {
+		
+		ArrayList<Card> remainingCards = new ArrayList<Card>(forceSingleCard == null ? 52 - deadCards.size() : 1);
+		if (forceSingleCard != null) {
+			remainingCards.add(forceSingleCard);
+			return remainingCards;
+		}
+		
 		for (int suit = Card.CLUBS; suit <= Card.SPADES; suit++) {
 			for (int denom = Card.DEUCE; denom <= Card.ACE; denom++) {
 				boolean foundInDeadList = false;
-				for (int i = 0; i < deadCards.length; i++) {
-					if (deadCards[i].getSuit() == suit && deadCards[i].getDenomination() == denom) {
+				for (int i = 0; i < deadCards.size(); i++) {
+					if (deadCards.get(i).getSuit() == suit && deadCards.get(i).getDenomination() == denom) {
 						// This card is in our dead card list, don't add it.
 						foundInDeadList = true;
 					}
@@ -96,88 +106,22 @@ public class VPCalc {
 		
 		boolean[] heldIndices = cbr.getHeldIndices();
 		Card[] cards = cbr.getCards();
-		System.out.println("Starting solveSingleHand.");
-		for (int i = 0; i < 5; i++) {
-			System.out.print(cards[i]);
-			if (heldIndices[i] == true) {
-				System.out.println(" - HELD");
-			} else {
-				System.out.println(" - not held");
-			}
-		}
-		for (int card1 = 1; card1 <= 52; card1++) {
-			Card c1;
-			if (heldIndices[0]) {
-				c1 = cards[0];
-			} else {
-				c1 = new Card(card1);
-				if (c1.equals(cards[0]) || c1.equals(cards[1]) || c1.equals(cards[2]) || c1.equals(cards[3]) || c1.equals(cards[4])) {
-					//The new card can not be one of the cards we were originally dealt.
-					continue;
-				}
-			}
-			for (int card2 = 1; card2 <= 52; card2++) {
-				Card c2;
-				if (heldIndices[1]) {
-					c2 = cards[1];
-				} else {
-					c2 = new Card(card2);
-					if (c2.equals(cards[0]) || c2.equals(cards[1]) || c2.equals(cards[2]) || c2.equals(cards[3]) || c2.equals(cards[4])) {
-						//The new card can not be one of the cards we were originally dealt.
-						continue;
-					}
-				}
 
-				if (c1.equals(c2)) {
-					//Can't have two of the same card in our hand.
-					continue;
-				}
-				for (int card3 = 1; card3 <= 52; card3++) {
-					Card c3;
-					if (heldIndices[2]) {
-						c3 = cards[2];
-					} else {
-						c3 = new Card(card3);
-						if (c3.equals(cards[0]) || c3.equals(cards[1]) || c3.equals(cards[2]) || c3.equals(cards[3]) || c3.equals(cards[4])) {
-							//The new card can not be one of the cards we were originally dealt.
-							continue;
-						}
-					}
-					if (c3.equals(c1) || c3.equals(c2)) {
-						//Can't have two of the same card in our hand.
-						continue;
-					}
-					for (int card4 = 1; card4 <= 52; card4++) {
-						Card c4;
-						if (heldIndices[3]) {
-							c4 = cards[3];
-						} else {
-							c4 = new Card(card4);
-							if (c4.equals(cards[0]) || c4.equals(cards[1]) || c4.equals(cards[2]) || c4.equals(cards[3]) || c4.equals(cards[4])) {
-								//The new card can not be one of the cards we were originally dealt.
-								continue;
-							}
-						}
-						if (c4.equals(c1) || c4.equals(c2) || c4.equals(c3)) {
-							//Can't have two of the same card in our hand.
-							continue;
-						}
-						for (int card5 = 1; card5 <= 52; card5++) {
-							Card c5;
-							if (heldIndices[4]) {
-								c5 = cards[4];
-							} else {
-								c5 = new Card(card5);
-								if (c5.equals(cards[0]) || c5.equals(cards[1]) || c5.equals(cards[2]) || c5.equals(cards[3]) || c5.equals(cards[4])) {
-									//The new card can not be one of the cards we were originally dealt.
-									continue;
-								}
-							}
-							if (c5.equals(c1) || c5.equals(c2) || c5.equals(c3) || c5.equals(c4)) {
-								//Can't have two of the same card in our hand.
-								continue;
-							}
-							ArrayList<Card> ac = new ArrayList<Card>();
+		ArrayList<Card> deadCards = new ArrayList<Card>(5);
+		for (int i = 0; i < cards.length; i++) {
+			deadCards.add(cards[i]);
+		}
+		
+		for (Card c1 : getPossibleRemainingCards(deadCards, heldIndices[0] == true ? cards[0] : null)) {
+			deadCards.add(c1);
+			for (Card c2 : getPossibleRemainingCards(deadCards, heldIndices[1] == true ? cards[1] : null)) {
+				deadCards.add(c2);
+				for (Card c3 : getPossibleRemainingCards(deadCards, heldIndices[2] == true ? cards[2] : null)) {
+					deadCards.add(c3);
+					for (Card c4 : getPossibleRemainingCards(deadCards, heldIndices[3] == true ? cards[3] : null)) {
+						deadCards.add(c4);
+						for (Card c5 : getPossibleRemainingCards(deadCards, heldIndices[4] == true ? cards[4] : null)) {
+							ArrayList<Card> ac = new ArrayList<Card>(5);
 							ac.add(c1);
 							ac.add(c2);
 							ac.add(c3);
@@ -191,27 +135,16 @@ public class VPCalc {
 							if (iterationCount >= progressIncrement && iterationCount % progressIncrement == 0) {
 								System.out.println(iterationCount + " iterations so far.");
 							}
-							
-							if (heldIndices[4]) {
-								break;  // Only go through one iteration of this card since it's fixed to a specific card.
-							}
 						}
-						if (heldIndices[3]) {
-							break;  // Only go through one iteration of this card since it's fixed to a specific card.
-						}
+						deadCards.remove(c4);
 					}
-					if (heldIndices[2]) {
-						break;  // Only go through one iteration of this card since it's fixed to a specific card.
-					}
+					deadCards.remove(c3);
 				}
-				if (heldIndices[1]) {
-					break;  // Only go through one iteration of this card since it's fixed to a specific card.
-				}
+				deadCards.remove(c2);
 			}
-			if (heldIndices[0]) {
-				break;  // Only go through one iteration of this card since it's fixed to a specific card.
-			}
+			deadCards.remove(c1);
 		}
+
 		System.out.println("Completed calculations, iteration total = " + iterationCount + ", results:");
 		System.out.println(cbr.toString());
 		return cbr;
