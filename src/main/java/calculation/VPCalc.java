@@ -1,7 +1,5 @@
 package calculation;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 
 import domain.Card;
 import domain.ComboRank;
@@ -25,8 +23,15 @@ public class VPCalc {
 		}
 	}
 	
-	public VPCalc() { 
+	public VPCalc() {
 		results = new FiveCardNormalizedResult();
+	}
+	
+	public VPCalc(boolean initializeCache) { 
+		// mostly added this to exclude initializing the cache in test cases if not needed.
+		if (initializeCache == true) {
+			results = new FiveCardNormalizedResult();
+		}
 	}
 	
 	public ArrayList<ComboRank> solveHandWithAllCombinations(VideoPokerHand vph) {
@@ -56,6 +61,31 @@ public class VPCalc {
 			}
 		}
 		return comboRanks;
+	}
+	
+	/*
+	 * Return an ArrayList<Card> structure with all cards that are not in the given list.
+	 */
+	public ArrayList<Card> getPossibleRemainingCards(Card[] deadCards) {
+		ArrayList<Card> remainingCards = new ArrayList<Card>(52 - deadCards.length);
+		for (int suit = Card.CLUBS; suit <= Card.SPADES; suit++) {
+			for (int denom = Card.DEUCE; denom <= Card.ACE; denom++) {
+				boolean foundInDeadList = false;
+				for (int i = 0; i < deadCards.length; i++) {
+					if (deadCards[i].getSuit() == suit && deadCards[i].getDenomination() == denom) {
+						// This card is in our dead card list, don't add it.
+						foundInDeadList = true;
+					}
+					if (foundInDeadList == true) {
+						break;
+					}
+				}
+				if (!foundInDeadList) {
+					remainingCards.add(new Card(suit, denom));
+				}
+			}
+		}
+		return remainingCards;
 	}
 	
 	// This function takes the given 5 card hand and held cards, and it calculates how many
