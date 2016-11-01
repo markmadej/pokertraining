@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import domain.Card;
@@ -12,6 +13,13 @@ import domain.ComboRank;
 import domain.VideoPokerHand;
 
 public class VPCalcTest {
+	
+	private static VPCalc vpc;
+	
+	@BeforeClass
+	public static void oneTimeSetUp() {
+		vpc = new VPCalc();
+	}
 	
 	@Test
 	public void testSolveSingleHandIterations() {
@@ -26,7 +34,6 @@ public class VPCalcTest {
 		
 		ComboRank cbr = new ComboRank(cards, heldIndices);
 		
-		VPCalc vpc = new VPCalc();
 		cbr = vpc.solveSingleHand(cbr);
 		assertTrue(cbr.getTotalIterations() == 1);
 		assertTrue(cbr.getRankResults()[VideoPokerHand.ROYAL_FLUSH] == 1);
@@ -45,7 +52,6 @@ public class VPCalcTest {
 		
 		ComboRank cbr = new ComboRank(cards, heldIndices);
 		
-		VPCalc vpc = new VPCalc();
 		cbr = vpc.solveSingleHand(cbr);
 		assertTrue(cbr.getTotalIterations() == 47);
 	}
@@ -63,7 +69,6 @@ public class VPCalcTest {
 		
 		ComboRank cbr = new ComboRank(cards, heldIndices);
 		
-		VPCalc vpc = new VPCalc();
 		cbr = vpc.solveSingleHand(cbr);
 		assertTrue(cbr.getTotalIterations() == (47 * 46));
 	}
@@ -81,7 +86,6 @@ public class VPCalcTest {
 		
 		ComboRank cbr = new ComboRank(cards, heldIndices);
 		
-		VPCalc vpc = new VPCalc();
 		cbr = vpc.solveSingleHand(cbr);
 		assertTrue(cbr.getTotalIterations() == (47 * 46 * 45));
 	}
@@ -96,9 +100,7 @@ public class VPCalcTest {
 		cards.add(new Card(Card.SPADES, Card.SEVEN));
 		
 		int expectedRemaining = 52 - cards.size();
-		
-		VPCalc vpc = new VPCalc(false);
-		
+				
 		ArrayList<Card> remainingCards = vpc.getPossibleRemainingCards(cards);
 		for (Card c : remainingCards) {
 			for (int i = 0; i < cards.size(); i++) {
@@ -125,9 +127,7 @@ public class VPCalcTest {
 		cards.add(new Card(Card.SPADES, Card.TREY));
 		
 		int expectedRemaining = 52 - cards.size();
-		
-		VPCalc vpc = new VPCalc(false);
-		
+			
 		ArrayList<Card> remainingCards = vpc.getPossibleRemainingCards(cards);
 		for (Card c : remainingCards) {
 			for (int i = 0; i < cards.size(); i++) {
@@ -148,8 +148,6 @@ public class VPCalcTest {
 		
 		Card forceCard = new Card(Card.SPADES, Card.KING);
 
-		VPCalc vpc = new VPCalc(false);
-		
 		ArrayList<Card> remainingCards = vpc.getPossibleRemainingCards(cards, forceCard);
 		assertTrue(remainingCards.size() == 1);
 		Card returnCard = remainingCards.get(0);
