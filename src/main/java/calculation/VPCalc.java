@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import domain.Card;
 import domain.ComboRank;
 import domain.FiveCardNormalizedResult;
+import domain.Paytable;
+import domain.VPDecision;
 import domain.VideoPokerHand;
 
 // I'll use this to test out some things and build the functions I need.
@@ -14,13 +16,12 @@ public class VPCalc {
 	public static void main(String[] args) {
 		VPCalc vpc = new VPCalc();
 
-		VideoPokerHand vph = new VideoPokerHand("AcJcTc4s4d");
+		VideoPokerHand vph = new VideoPokerHand("AcAdKcQcJs");
 		ArrayList<ComboRank> solution = vpc.solveHandWithAllCombinations(vph);
-		int ct = 0;
-		for (ComboRank cbr : solution) {
-			ct++;
-			System.out.println("ComboRank " + ct + ":\n" + cbr.toString());
-		}
+		System.out.println("Finished solveHandWithAllCombinations");
+		VPDecision vpd = new VPDecision();
+		vpd.calculateBest(solution, new Paytable());
+		
 	}
 	
 	public VPCalc() {
@@ -145,8 +146,7 @@ public class VPCalc {
 			deadCards.remove(c1);
 		}
 
-		System.out.println("Completed calculations, iteration total = " + iterationCount + ", results:");
-		System.out.println(cbr.toString());
+		System.out.println("Completed calculations, iteration total = " + iterationCount + ".");
 		return cbr;
 	}
 	

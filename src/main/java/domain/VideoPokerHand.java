@@ -326,8 +326,12 @@ public class VideoPokerHand {
 				return FOUR_DEUCES;
 			}
 		}
-		if (tripsDenom != -1 && numPairs == 1) {
-			return FULL_HOUSE;
+		if (tripsDenom != -1) {
+			if (numPairs == 1) {
+				return FULL_HOUSE;
+			} else {
+				return THREE_OF_A_KIND;
+			}
 		}
 		if (numPairs == 2) {
 			return TWO_PAIR;

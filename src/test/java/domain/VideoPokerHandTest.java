@@ -9,6 +9,58 @@ import org.junit.Test;
 public class VideoPokerHandTest {
 
 	@Test
+	public void testTrips() {
+		Card[] cards = new Card[5];
+		cards[0] = new Card(Card.CLUBS, Card.ACE);
+		cards[1] = new Card(Card.DIAMONDS, Card.ACE);
+		cards[2] = new Card(Card.CLUBS, Card.KING);
+		cards[3] = new Card(Card.CLUBS, Card.QUEEN);
+		cards[4] = new Card(Card.HEARTS, Card.ACE);
+		
+		VideoPokerHand vph = new VideoPokerHand();
+		int rank = vph.calculateBestRank(cards);
+		assertTrue("Trips was not found : " + rank, rank == VideoPokerHand.THREE_OF_A_KIND);
+	}
+	
+	@Test
+	public void testAcesAreNeverNothing() {
+		Card[] cards = new Card[5];
+		cards[0] = new Card(Card.CLUBS, Card.ACE);
+		cards[1] = new Card(Card.DIAMONDS, Card.ACE);
+		cards[2] = new Card(Card.CLUBS, Card.KING);
+		cards[3] = new Card(Card.CLUBS, Card.QUEEN);
+		int matchCt = 0;
+		for (int suit = Card.CLUBS; suit <= Card.SPADES; suit++) {
+			for (int denom = Card.DEUCE; denom <= Card.ACE; denom++) {
+				Card c = new Card(suit, denom);
+				boolean foundMatch = false;
+				for (int i = 0; i <= 3; i++) {
+					if (c.equals(cards[i])) {
+						foundMatch = true;
+						matchCt++;
+					}
+				}
+				if (foundMatch) {
+					continue;
+				}
+				cards[4] = c;
+				VideoPokerHand vph = new VideoPokerHand();
+				int rank = vph.calculateBestRank(cards);
+				if (rank == VideoPokerHand.NOTHING) {
+					System.out.println("Found 'nothing' with these cards:");
+					for (int i = 0; i <= 4; i++) {
+						Card cc = cards[i];
+						System.out.println("* " + cc);
+					}
+					assertTrue("It should not be possible for a two ace hand to be nothing.", rank != VideoPokerHand.NOTHING);
+				}
+				
+			}
+		}
+		assertTrue(matchCt == 4);
+	}
+	
+	@Test
 	public void bestRankTestRoyal() {
 		Card[] cards = new Card[5];
 		cards[0] = new Card(Card.HEARTS, Card.JACK);
