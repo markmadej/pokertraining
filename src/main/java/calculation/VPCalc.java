@@ -16,7 +16,7 @@ public class VPCalc {
 	public static void main(String[] args) {
 		VPCalc vpc = new VPCalc();
 
-		VideoPokerHand vph = new VideoPokerHand("AcAdKcQcJs");
+		VideoPokerHand vph = new VideoPokerHand("QsJdTd5h5c");
 		ArrayList<ComboRank> solution = vpc.solveHandWithAllCombinations(vph);
 		System.out.println("Finished solveHandWithAllCombinations");
 		VPDecision vpd = new VPDecision();

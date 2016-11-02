@@ -86,4 +86,12 @@ public class VPDecision {
 			System.out.println(" : Average value : " + value);
 		}
 	}
+
+	public ArrayList<Double> getSortedAverageValues() {
+		return sortedAverageValues;
+	}
+
+	public ArrayList<ComboRank> getSortedComboRanks() {
+		return sortedComboRanks;
+	}
 }

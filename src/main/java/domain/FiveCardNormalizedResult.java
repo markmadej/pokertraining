@@ -37,20 +37,17 @@ public class FiveCardNormalizedResult {
 		if (resultCache == null || resultCache.size() != PROPER_CACHE_SIZE) {
 			System.out.println("Unable to properly load cache from file.  Rebuilding.");
 			resultCache = generate5CardMappingTable();
-			System.out.println("Generated file.  Now storing to disk.");
+			if (resultCache == null || resultCache.size() != PROPER_CACHE_SIZE) {
+				throw new RuntimeException("Unable to load cache for file even after regeneration.");
+			}
+			System.out.println("Generated cache.  Attempting to store to disk.");
+			cacheLoaded = true;
 			if (!serializeFile(resultCache)) {
-				System.out.println("Could not serialize and store file.  Cache is not initialized properly.");
+				System.out.println("Could not serialize and store file.  Cache is created for this run but will be regenerated next time.");
 				return;
 			}
-			System.out.println("Regenerated cache, attempting reload.");
-			resultCache = loadFile();
-		}
-		
-		if (resultCache == null || resultCache.size() != PROPER_CACHE_SIZE) {
-			throw new RuntimeException("Unable to load cache for file even after regeneration.");
 		} else {
 			cacheLoaded = true;
-			System.out.println("Successfully loaded results cache.");
 		}
 		
 	}
