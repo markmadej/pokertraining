@@ -7,34 +7,66 @@ import domain.FiveCardNormalizedResult;
 import domain.Paytable;
 import domain.VPDecision;
 import domain.VideoPokerHand;
+import java.util.Scanner;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 // I'll use this to test out some things and build the functions I need.
 public class VPCalc {
-	
+
 	private FiveCardNormalizedResult results;
-	
+
+	public static String getCardsFromUserOrExit() {
+		Scanner scanner = new Scanner(System.in);
+		Pattern p = Pattern.compile("([2-9TJQKA][cdhs]){5}");  // 5 card hand regex
+		while (true) {
+			System.out.println("Please enter the 5 card combination.");
+			System.out.println("Please note the format is D1S1D2S2...D5S5, where D is the denomination of the card and S is the suit.");
+			System.out.println("Example : Ah9c5c3sTh  (note - case matters for now.  First character is always uppercase, second always lowercase.)");
+			System.out.println("Enter 'q' to quit.");
+			System.out.print(">> ");
+
+			String cardList = scanner.next().trim();
+
+			if (cardList.equals("q")) {
+				System.out.println("\n\nSee ya later!  :-)\n");
+				System.exit(0);
+			}
+
+			Matcher m = p.matcher(cardList);
+			if (m.matches()) {
+				return cardList;
+			}
+
+			System.out.println("\n\n\n*** Sorry, that was not a valid 5 card combination.  ***\n");
+
+		}
+	}
+
 	public static void main(String[] args) {
 		VPCalc vpc = new VPCalc();
 
-		VideoPokerHand vph = new VideoPokerHand("QsJdTd5h5c");
-		ArrayList<ComboRank> solution = vpc.solveHandWithAllCombinations(vph);
-		System.out.println("Finished solveHandWithAllCombinations");
-		VPDecision vpd = new VPDecision();
-		vpd.calculateBest(solution, new Paytable());
-		
+		while (true) {
+			String nextCards = getCardsFromUserOrExit();
+			VideoPokerHand vph = new VideoPokerHand(nextCards);
+			ArrayList<ComboRank> solution = vpc.solveHandWithAllCombinations(vph);
+			VPDecision vpd = new VPDecision();
+			vpd.calculateBest(solution, new Paytable());
+		}
+
 	}
-	
+
 	public VPCalc() {
 		results = new FiveCardNormalizedResult();
 	}
-	
-	public VPCalc(boolean initializeCache) { 
+
+	public VPCalc(boolean initializeCache) {
 		// mostly added this to exclude initializing the cache in test cases if not needed.
 		if (initializeCache == true) {
 			results = new FiveCardNormalizedResult();
 		}
 	}
-	
+
 	public ArrayList<ComboRank> solveHandWithAllCombinations(VideoPokerHand vph) {
 		// Go through each combination of holding or not holding each card in the hand.
 		Card[] cards = vph.getOriginalCards();
@@ -63,7 +95,7 @@ public class VPCalc {
 		}
 		return comboRanks;
 	}
-	
+
 	public ArrayList<Card> getPossibleRemainingCards(ArrayList<Card> deadCards) {
 		return getPossibleRemainingCards(deadCards, null);
 	}
@@ -72,13 +104,13 @@ public class VPCalc {
 	 * If forceSingleCard != null, the only possibility is an ArrayList<Card> with that one card.
 	 */
 	public ArrayList<Card> getPossibleRemainingCards(ArrayList<Card> deadCards, Card forceSingleCard) {
-		
+
 		ArrayList<Card> remainingCards = new ArrayList<Card>(forceSingleCard == null ? 52 - deadCards.size() : 1);
 		if (forceSingleCard != null) {
 			remainingCards.add(forceSingleCard);
 			return remainingCards;
 		}
-		
+
 		for (int suit = Card.CLUBS; suit <= Card.SPADES; suit++) {
 			for (int denom = Card.DEUCE; denom <= Card.ACE; denom++) {
 				boolean foundInDeadList = false;
@@ -98,13 +130,13 @@ public class VPCalc {
 		}
 		return remainingCards;
 	}
-	
+
 	// This function takes the given 5 card hand and held cards, and it calculates how many
 	// times each result takes place through each possible remaining iteration of the cards.
 	public ComboRank solveSingleHand(ComboRank cbr) {
 		int iterationCount = 0;
-		int progressIncrement = 30000000;
-		
+		int progressIncrement = 1000000;
+
 		boolean[] heldIndices = cbr.getHeldIndices();
 		Card[] cards = cbr.getCards();
 
@@ -112,7 +144,7 @@ public class VPCalc {
 		for (int i = 0; i < cards.length; i++) {
 			deadCards.add(cards[i]);
 		}
-		
+
 		for (Card c1 : getPossibleRemainingCards(deadCards, heldIndices[0] == true ? cards[0] : null)) {
 			deadCards.add(c1);
 			for (Card c2 : getPossibleRemainingCards(deadCards, heldIndices[1] == true ? cards[1] : null)) {
@@ -149,6 +181,6 @@ public class VPCalc {
 		System.out.println("Completed calculations, iteration total = " + iterationCount + ".");
 		return cbr;
 	}
-	
+
 
 }
