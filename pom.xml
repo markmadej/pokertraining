@@ -34,7 +34,22 @@
 	    <version>2.7</version>
 	</dependency>
   </dependencies>
-  
+  <build>
+  <plugins>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-jar-plugin</artifactId>
+      <configuration>
+        <archive>
+          <manifest>
+            <mainClass>calculation.VPCalc</mainClass>
+          </manifest>
+        </archive>
+      </configuration>
+    </plugin>
+  </plugins>
+</build>
+
   <reporting>
     <plugins>
       <plugin>
@@ -49,5 +64,5 @@
       </plugin>
     </plugins>
   </reporting>
-  
+
 </project>
